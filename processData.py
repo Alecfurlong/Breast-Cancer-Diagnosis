@@ -1,46 +1,29 @@
 import numpy as np
-#convert raw csv file to matrix, convert M(Malignant) to +1 and B(Benign) to -1
-#initialize array to full size of breast cancer data
-#569 samples, 32 features, feature 0 is breast cancer id number
+import csv
 
 def clean(filepath):
-	X = np.zeros((569,31))			#Data Matrix
-	ID_dict = []								#ID dictionary, ID[0] corresponds to Matrix[0]
-	F = []											#Feature Definitions				
+    rawtable = []
 
-	with open(filepath) as fp:
-		#first line is column definitions
-		line = fp.readline()
-		definitions = line.split(',')
-		for n in range(len(definitions)-2):
-			F.append(definitions[n+1])
+    # load entire csv into rawtable
+    with open(filepath) as fp:
+        reader = csv.reader(fp)
+        for row in reader:
+            rawtable.append(row)
+    
+    # F is the list of features (first row of the table)
+    # rawtable[0][1:] -> "get all columns after the first one in the first row"
+    F = rawtable[0][1:]
 
-		line = fp.readline()		
-		i = 0
-		while line:
-			#get features
-			features = line.split(',')
-			
-			#get id and append
-			ID_dict.append(features[0])
-			
-			#convert M to +1, B to -1
-			if features[1] is 'M':
-				features[1] = 1.0
-			else:
-				features[1] = -1.0
+    # ID_list is the ID of each sample (first column of every row)
+    ID_list = [int(sample[0]) for sample in rawtable[1:]]
 
-			#add features to matrix
-			for j in range(len(features)-1):
-				X[i][j] = features[j+1]
-			
-			#get next line
-			line = fp.readline()
-			i += 1
+    # X is the numpy array of all X values
+    X = [sample[1:] for sample in rawtable[1:]]
+    for i, sample in enumerate(X):
+        # +1 for M, -1 for B
+        X[i][0] = 1.0 if sample[0] == 'M' else -1.0
 
-	#check if X has any Nan
-	if np.any(np.isnan(X)):
-		"Data is corrupted, contains Nan"
-		exit(1)
-	
-	return X, F, ID_dict;
+    # cast to floats
+    X = np.array(X).astype(float)
+
+    return X, F, ID_list

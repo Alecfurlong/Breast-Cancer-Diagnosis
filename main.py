@@ -1,9 +1,9 @@
-import processData
+import processData 
 
-X, F, id_dict = processData.clean("raw_breast_cancer_data.csv")
+X, F, id_list = processData.clean("raw_breast_cancer_data.csv")
 
 print("id -list")
-print(id_dict)
+print(id_list)
 print()
 
 print("Feature Definitions")
