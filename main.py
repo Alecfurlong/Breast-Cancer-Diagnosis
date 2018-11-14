@@ -1,14 +1,18 @@
 import processData 
+import numpy as np
+import matplotlib.pyplot as pp
 
-X, F, id_list = processData.clean("raw_breast_cancer_data.csv")
+X, y, F, id_list = processData.clean("raw_breast_cancer_data.csv")
 
-print("id -list")
-print(id_list)
-print()
+print(X.shape)
+# counts of types of cancer
+print("malignant count: " + str(np.sum(y == 1)))
+print("benign count: " + str(np.sum(y == -1)))
 
-print("Feature Definitions")
-print(F)
-print()
+positive = list(np.where(y==1)[0])
+negative = list(np.where(y==-1)[0])
 
-print("Data")
-print(X)
+pp.figure()
+pp.plot(X[negative, 1], X[negative, 2], 'bo')
+pp.plot(X[positive, 1], X[positive, 2], 'ro')
+pp.show()

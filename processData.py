@@ -18,12 +18,14 @@ def clean(filepath):
     ID_list = [int(sample[0]) for sample in rawtable[1:]]
 
     # X is the numpy array of all X values
-    X = [sample[1:] for sample in rawtable[1:]]
-    for i, sample in enumerate(X):
+    data = [sample[1:] for sample in rawtable[1:]]
+    for i, sample in enumerate(data):
         # +1 for M, -1 for B
-        X[i][0] = 1.0 if sample[0] == 'M' else -1.0
+        data[i][0] = 1.0 if sample[0] == 'M' else -1.0
 
     # cast to floats
-    X = np.array(X).astype(float)
+    data = np.array(data).astype(float)
+    y = data[:, 0]
+    X = data[:, 1:]
 
-    return X, F, ID_list
+    return X, y, F, ID_list
