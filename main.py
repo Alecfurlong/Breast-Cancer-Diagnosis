@@ -26,6 +26,7 @@ pp.show()
 """
 
 # means and stdevs of each column
+"""
 m = np.mean(X, axis=0)
 s = np.std(X, axis=0)
 print(m.size)
@@ -38,7 +39,7 @@ pp.figure()
 pp.plot(s, 'ro')
 
 pp.show()
-
+"""
 
 # correlation heatmap
 """
