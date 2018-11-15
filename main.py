@@ -1,11 +1,14 @@
-import processData 
+import processData
 import numpy as np
 import matplotlib.pyplot as pp
+import crossValidation as cv
+import svm
 
 X, y, F, id_list = processData.clean("raw_breast_cancer_data.csv")
 
 # remove 'diagnosis' column
 F = F[1:]
+print("F:")
 print(F)
 print(F[23])
 
@@ -46,3 +49,9 @@ pp.show()
 pp.matshow(np.corrcoef(X, rowvar=False))
 pp.show()
 """
+
+# run linear SVM with C=1.0
+svm.linearSVM(X, y, 1.0)
+
+# two fold cross validation
+cv.twoFold(X, y, 1.0)
