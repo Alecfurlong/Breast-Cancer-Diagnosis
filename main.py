@@ -54,4 +54,4 @@ pp.show()
 svm.linearSVM(X, y, 1.0)
 
 # two fold cross validation
-cv.twoFold(X, y, 1.0)
+cv.linearTwoFold(X, y, 1.0)
