@@ -55,3 +55,6 @@ svm.linearSVM(X, y, 1.0)
 
 # two fold cross validation
 cv.linearTwoFold(X, y, 1.0)
+
+# bootstrapping within two-fold crossValidation
+cv.nestedValidation(X, y)
