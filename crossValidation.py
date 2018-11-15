@@ -2,7 +2,7 @@ import numpy as np
 from sklearn.svm import SVC
 
 #two fold cross validation with linear kernel
-def linearTwoFold(X, y, C):
+def linearTwoFold(X, y, C, kernel):
     n, d = X.shape
 
     # split positive and negative valued samples
@@ -17,12 +17,12 @@ def linearTwoFold(X, y, C):
     y_pred = np.zeros(n, int)
 
     # train with fold1, predict fold2
-    alg = SVC(C=C, kernel='linear')
+    alg = SVC(C=C, kernel=kernel)
     alg.fit(X[samples_in_fold1], y[samples_in_fold1])
     y_pred[samples_in_fold2] = alg.predict(X[samples_in_fold2])
 
     # train with fold2, predict fold1
-    alg = SVC(C=C, kernel='linear')
+    alg = SVC(C=C, kernel=kernel)
     alg.fit(X[samples_in_fold2], y[samples_in_fold2])
     y_pred[samples_in_fold1] = alg.predict(X[samples_in_fold1])
 
@@ -30,7 +30,7 @@ def linearTwoFold(X, y, C):
     print("Two Fold Error:\t%f" % err)
 
 # bootstrapping within two-fold crossValidation
-def nestedValidation(X, y):
+def nestedValidation(X, y, kernel):
     C_list = [0.1, 1.0, 10.0]
     B = 30
 
@@ -48,7 +48,7 @@ def nestedValidation(X, y):
     best_C = 0.0
 
     for C in C_list:
-        err = bootstrapping(B, X[samples_in_fold1], y[samples_in_fold1], C)
+        err = bootstrapping(B, X[samples_in_fold1], y[samples_in_fold1], C, kernel)
         print("C=", C, "err=", err)
         if (err <= best_err):
             best_err = err
@@ -56,7 +56,7 @@ def nestedValidation(X, y):
 
     print("Best C=", best_C)
 
-    alg = SVC(C=best_C, kernel='linear')
+    alg = SVC(C=best_C, kernel=kernel)
     alg.fit(X[samples_in_fold1], y[samples_in_fold1])
     y_pred[samples_in_fold2] = alg.predict(X[samples_in_fold2])
 
@@ -64,7 +64,7 @@ def nestedValidation(X, y):
     best_C = 0.0
 
     for C in C_list:
-        err = bootstrapping(B, X[samples_in_fold2], y[samples_in_fold2], C)
+        err = bootstrapping(B, X[samples_in_fold2], y[samples_in_fold2], C, kernel)
         print("C=", C, "err=", err)
         if (err <= best_err):
             best_err = err
@@ -73,7 +73,7 @@ def nestedValidation(X, y):
     print("Best C=", best_C)
 
 
-    alg = SVC(C=best_C, kernel='linear')
+    alg = SVC(C=best_C, kernel=kernel)
     alg.fit(X[samples_in_fold2], y[samples_in_fold2])
     y_pred[samples_in_fold1] = alg.predict(X[samples_in_fold1])
 
@@ -82,7 +82,7 @@ def nestedValidation(X, y):
     print("Nested Validation Error=", err)
     return err
 
-def bootstrapping(B, X_subset, y_subset, C):
+def bootstrapping(B, X_subset, y_subset, C, kernel):
     n = len(X_subset)
     bs_err = np.zeros(B)
 
@@ -90,7 +90,7 @@ def bootstrapping(B, X_subset, y_subset, C):
         train_samples = list(np.random.randint(0,n,n))
         test_samples = list(set(range(n)) - set(train_samples))
 
-        alg = SVC(C=C, kernel='linear')
+        alg = SVC(C=C, kernel=kernel)
         alg.fit(X_subset[train_samples], y_subset[train_samples])
         bs_err[b] = np.mean(y_subset[test_samples] != alg.predict(X_subset[test_samples]))
     err = np.mean(bs_err)

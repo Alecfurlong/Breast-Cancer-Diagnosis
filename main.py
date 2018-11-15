@@ -53,8 +53,8 @@ pp.show()
 # run linear SVM with C=1.0
 svm.linearSVM(X, y, 1.0)
 
-# two fold cross validation
-cv.linearTwoFold(X, y, 1.0)
+# two fold cross validation, C=1.0, linear kernel
+cv.linearTwoFold(X, y, 1.0, 'linear')
 
-# bootstrapping within two-fold crossValidation
-cv.nestedValidation(X, y)
+# bootstrapping within two-fold crossValidation, linear kernel
+cv.nestedValidation(X, y, 'linear')
