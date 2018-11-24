@@ -1,5 +1,6 @@
 # python bytecode
 __pycache__/
+*.pyc
 
 # vim files
 *.swp

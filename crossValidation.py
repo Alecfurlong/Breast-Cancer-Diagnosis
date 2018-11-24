@@ -9,6 +9,10 @@ def linearTwoFold(X, y, C, kernel):
     positive_samples = list(np.where(y==1)[0])
     negative_samples = list(np.where(y==-1)[0])
 
+    # randomize the data for testing
+    np.random.shuffle(positive_samples)
+    np.random.shuffle(negative_samples)
+
     # split samples into two folds with similar proportion of positive:negative
     samples_in_fold1 = positive_samples[:106] + negative_samples[:178]
     samples_in_fold2 = positive_samples[106:] + negative_samples[178:]
@@ -37,6 +41,10 @@ def nestedValidation(X, y, kernel):
     # split positive and negative valued samples
     positive_samples = list(np.where(y==1)[0])
     negative_samples = list(np.where(y==-1)[0])
+
+    # randomize data for testing
+    np.random.shuffle(positive_samples)
+    np.random.shuffle(negative_samples)
 
     # split samples into two folds with similar proportion of positive:negative
     samples_in_fold1 = positive_samples[:106] + negative_samples[:178]
