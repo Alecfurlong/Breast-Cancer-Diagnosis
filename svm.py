@@ -3,7 +3,6 @@ import numpy as np
 
 import processData
 
-
 # training and testing on the entire dataset gives 3.3% error
 def linearSVM(X, y, C):
     alg = SVC(C=C, kernel='linear')
