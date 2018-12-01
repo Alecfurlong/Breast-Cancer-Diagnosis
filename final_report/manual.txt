@@ -3,3 +3,6 @@ $ pip3 install numpy scikit-learn matplotlib
 
 Running the Code:
 $ python3 -W ignore main.py
+
+Running the ROC plots:
+$ python3 -W ignore roc.py
