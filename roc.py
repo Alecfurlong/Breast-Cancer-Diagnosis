@@ -1,5 +1,6 @@
 import numpy as np
 import leaveOneOut as loocv
+import crossValidation as cv
 import matplotlib.pyplot as pp
 from sklearn import metrics
 
@@ -42,7 +43,8 @@ def get_true_false_rates(X,y):
 	correctlyClassifiedBen = 0.0
 
 	#get predictions using leave one out cross validation
-	y_pred = loocv.run(X,y,1.0,'linear')
+	#y_pred = loocv.run(X,y,1.0,'linear')
+	y_pred = cv.linearTwoFold(X, y, 1.0, 'linear')
 
 	for i in range(len(X)):
 		#if y[i] matches prediction for X[i]
