@@ -129,7 +129,7 @@ def nestedValidation(X, y, kernel):
 
 def nestedKFoldValidation(k, X, y, kernel):
     """
-    Performs a nested validation with k-fold validation and bootstrapping
+    Performs a nested validation with k-fold validation 
     to determine the best slack value for the support vector machine.
 
     k is the number of folds to use
@@ -142,12 +142,12 @@ def nestedKFoldValidation(k, X, y, kernel):
     print("running k-folds cross validation to find best slack C")
 
     # list of slack variable values used to test the SVM with
-    C_list = [0.1, 1.0, 10.0, 100]
+    C_list = [0.01, 0.1, 1.0, 10.0, 100, 1000]
     # number of iterations to run the bootstrapping
     B = 30
 
     sample_list = list(range(len(y)))
-    # np.random.shuffle(sample_list)
+    np.random.shuffle(sample_list)
 
     # splitting list into k folds
     foldSize = len(y)//k
@@ -155,26 +155,49 @@ def nestedKFoldValidation(k, X, y, kernel):
 
     # add remaining items to the last fold
     folds[-1] += sample_list[foldSize*k:]
-   
-    bestC = -1
-    bestError = 1
 
-    for c in C_list:
-        # k folds bootstrapping
-        # iterate over each testing fold
-        error = 0
-        for i, test in enumerate(folds):
-            # the training data is all other folds
-            train = [sample for f in folds for sample in f if f != test]
-            alg = SVC(C=c, kernel=kernel)
-            alg.fit(X[train], y[train])
-            error += np.mean(y[test] != alg.predict(X[test]))
-        # average the error rates
-        error = error/k
-        print('C =', c, 'avg error =', error)
-        if error < bestError:
-            bestError = error
-            bestC = c
+    test_results = {}
+    for test in folds:
+        # python dictionary to keep track of errors
+        error_dict = {}
+        for validation in folds:
+            # do not want identical test and validation folds
+            if validation == test:
+                continue
 
-    print('Best C = ', bestC)
+            # training data is all folds except for test and validation
+            train = [f for f in folds if f != test and f != validation][0]
+            # find errors across all parameters
+            for c in C_list:
+                alg = SVC(C=c, kernel=kernel)
+                alg.fit(X[train], y[train])
+                err = np.mean(y[validation] != alg.predict(X[validation]))
+                # keep track of all errors
+                if c not in error_dict:
+                    error_dict[c] = {}
+                    error_dict[c]['err'] = []
+                    error_dict[c]['model'] = alg
+                error_dict[c]['err'].append(err)
 
+        # finding the best parameter from the inner loop
+        bestC = -1
+        bestError = 1.0
+        for c in error_dict:
+            print('c=', c, 'err=', np.mean(error_dict[c]['err']))
+            err = np.mean(error_dict[c]['err'])
+            if err < bestError:
+                bestError = err
+                bestC = c
+        print('best c from inner loop is', bestC)
+
+        # testing the best model from the inner loop against test data
+        train_err = np.mean(y[test] != alg.predict(X[test]))
+        if bestC not in test_results:
+            test_results[bestC] = []
+        test_results[bestC].append(train_err)
+        print('==== next outer fold ====')
+
+    for c in test_results:
+        print('c=', c,
+              'mean error=', np.mean(test_results[c]),
+              'stddev of errors=', np.std(test_results[c]))
