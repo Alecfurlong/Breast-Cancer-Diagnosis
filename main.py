@@ -6,6 +6,7 @@ import matplotlib.pyplot as pp
 import crossValidation as cv
 import processData
 import diagnostics
+import roc
 
 X, y, F, id_list = processData.clean("raw_breast_cancer_data.csv")
 
@@ -19,9 +20,12 @@ print(F)
 # counts of types of cancer
 print("malignant count: " + str(np.sum(y == 1)))
 print("benign count: " + str(np.sum(y == -1)))
-cv.nestedValidation(X, y, 'rbf')
+#cv.nestedValidation(X, y, 'linear')
 
-cv.nestedKFoldValidation(10, X, y, 'rbf')
+# generate ROC plot
+roc.generateROC(X,y)
+
+#cv.nestedKFoldValidation(10, X, y, 'linear')
 
 # two fold cross validation, C=1.0, linear kernel
 # cv.linearTwoFold(X, y, 1.0, 'linear')

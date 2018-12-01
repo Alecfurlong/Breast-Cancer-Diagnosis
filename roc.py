@@ -7,6 +7,8 @@ def generateROC(X,y):
 	#get true positive rate, false positive rate
 	tpr, fpr = get_true_false_rates(X,y)
 	
+	print ("got stuff plotting now")
+
 	pp.figure()
 	pp.xlabel("False Positive Rate")
 	pp.ylabel("True Positive Rate")
@@ -14,7 +16,7 @@ def generateROC(X,y):
 
 	#calc area under curve and plot
 	area_under_curve = metrics.auc(fpr, tpr)
-	roc_label = '{} (AUC={:.3f})'.format('Method', area_under_curve)
+	roc_label = '{} (AUC={:.3f})'.format('Linear SVM w/ LOOCV', area_under_curve)
 	pp.plot(fpr, tpr, color='orange', linewidth=2, label=roc_label)
 
 	#plot linear line
@@ -24,7 +26,8 @@ def generateROC(X,y):
 	pp.ylim(0.0, 1.0)
 	pp.legend(fontsize=10, loc='best')
 	pp.tight_layout()
-
+	
+	pp.show()
 	pass
 
 def get_true_false_rates(X,y):
