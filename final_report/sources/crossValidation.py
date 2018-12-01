@@ -39,6 +39,7 @@ def linearTwoFold(X, y, C, kernel):
 
     err = np.mean(y != y_pred)
     print("Two Fold Error:\t%f" % err)
+    return y_pred
 
 def bootstrapping(B, X_subset, y_subset, C, kernel):
     n = len(X_subset)
