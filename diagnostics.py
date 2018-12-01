@@ -25,22 +25,10 @@ def drawParameterVAccuracyPlot():
     C_list = [0.001, 0.01, 0.1, 1.0, 10.0, 100, 1000]
     # C_list = [0.001, 0.01, 0.1]
 
-    n = len(y)
-    data = [x for x in range(n)]
-    np.random.shuffle(data)
-
-    train = data[:int(n*0.8)]
-    test = data[int(n*0.8):]
-
-    errors = {}
-    for c in C_list:
-        print(c)
-        alg = SVC(C=c, kernel='linear')
-        alg.fit(X[train], y[train])
-        errors[c] = np.mean(y[test] != alg.predict(X[test]))
-
     y_pos = np.arange(len(C_list))
-    errList = [errors[c] for c in C_list]
+    # results from k folds cross validation
+    errList = [0.0773, 0.0933, 0.0833, 0.0893, 0.0893, 0.0893, 0.0893]
+
     pp.bar(y_pos, errList, align='center')
     pp.xticks(y_pos, C_list)
     pp.xlabel('Slack Value')
