@@ -6,18 +6,45 @@ from sklearn import metrics
 import processData
 
 def generateROC(X,y):
-    #get true positive rate, false positive rate
-    tpr, fpr = get_true_false_rates(X,y)
-    
+   
     pp.figure()
     pp.xlabel("False Positive Rate")
     pp.ylabel("True Positive Rate")
     pp.title("ROC Curve")
 
+    #################### plot 1		
+    y_pred = loocv.run(X, y, 0.0001, 'linear')
+    
+    #get true positive rate, false positive rate
+    tpr, fpr = get_true_false_rates(X,y,y_pred)
+    
     #calc area under curve and plot
     area_under_curve = metrics.auc(fpr, tpr)
-    roc_label = '{} (AUC={:.3f})'.format('Method', area_under_curve)
+    roc_label = '{} (AUC={:.3f})'.format('Linear SVM w/LOOCV', area_under_curve)
     pp.plot(fpr, tpr, color='orange', linewidth=2, label=roc_label)
+
+    #################### plot 2		
+    y_pred = cv.linearTwoFold(X, y, 0.0001, 'linear')
+    
+    #get true positive rate, false positive rate
+    tpr, fpr = get_true_false_rates(X,y,y_pred)
+    
+    #calc area under curve and plot
+    area_under_curve = metrics.auc(fpr, tpr)
+    roc_label = '{} (AUC={:.3f})'.format('Linear SVM w/2-Fold', area_under_curve)
+    pp.plot(fpr, tpr, color='red', linewidth=2, label=roc_label)
+
+    #################### plot 3		
+    y_pred = cv.linearTwoFold(X, y, 0.01, 'rbf')
+    
+    #get true positive rate, false positive rate
+    tpr, fpr = get_true_false_rates(X,y,y_pred)
+    
+    #calc area under curve and plot
+    area_under_curve = metrics.auc(fpr, tpr)
+    roc_label = '{} (AUC={:.3f})'.format('RBF SVM w/2-Fold', area_under_curve)
+    pp.plot(fpr, tpr, color='green', linewidth=2, label=roc_label)
+
 
     #plot linear line
     x = [0.0, 1.0]
@@ -29,7 +56,7 @@ def generateROC(X,y):
 
     pp.show()
 
-def get_true_false_rates(X,y):
+def get_true_false_rates(X,y,y_pred):
     tpr = [0.0]  # true positive rate
     fpr = [0.0]  # false positive rate
     
@@ -42,8 +69,6 @@ def get_true_false_rates(X,y):
     correctlyClassifiedMal = 0.0
     correctlyClassifiedBen = 0.0
 
-    #get predictions using leave one out cross validation
-    y_pred = loocv.run(X, y, 0.01, 'linear')
 
     for i, ypredi in enumerate(y_pred):
         # only worry about predicted positives
