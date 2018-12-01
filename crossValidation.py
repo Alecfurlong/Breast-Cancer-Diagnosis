@@ -142,7 +142,7 @@ def nestedKFoldValidation(k, X, y, kernel):
     print("running k-folds cross validation to find best slack C")
 
     # list of slack variable values used to test the SVM with
-    C_list = [0.01, 0.1, 1.0, 10.0, 100, 1000]
+    C_list = [0.001, 0.01, 0.1, 1.0, 10.0, 100, 1000]
     # number of iterations to run the bootstrapping
     B = 30
 
@@ -158,6 +158,7 @@ def nestedKFoldValidation(k, X, y, kernel):
 
     test_results = {}
     for test in folds:
+        print('==== next outer fold ====')
         # python dictionary to keep track of errors
         error_dict = {}
         for validation in folds:
@@ -195,7 +196,6 @@ def nestedKFoldValidation(k, X, y, kernel):
         if bestC not in test_results:
             test_results[bestC] = []
         test_results[bestC].append(train_err)
-        print('==== next outer fold ====')
 
     for c in test_results:
         print('c=', c,

@@ -1,17 +1,20 @@
-import processData
+# imported libraries
 import numpy as np
 import matplotlib.pyplot as pp
+
+# group project code
 import crossValidation as cv
-import svm
+import processData
+import diagnostics
 
 X, y, F, id_list = processData.clean("raw_breast_cancer_data.csv")
 
-# remove 'diagnosis' column
+# remove 'diagnosis' column from column labels
 F = F[1:]
-# print data column headers
-# print("F:")
-# print(F)
-# print(F[23])
+print(F)
+
+# deleting highly correlated predictor variables where |correlation| > 0.9
+F, X = diagnostics.deleteColumns([2, 3, 12, 13, 20, 21, 22, 23, 24], F, X)
 
 # counts of types of cancer
 print("malignant count: " + str(np.sum(y == 1)))

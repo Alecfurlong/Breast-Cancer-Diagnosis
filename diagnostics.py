@@ -11,8 +11,9 @@ def deleteColumn(n, F, X):
     return F, X
 
 def deleteColumns(n, F, X):
+    removing = [F[i] for i in n]
+    print('deleting columns: ', removing)
     n.sort(reverse=True)
-    print(n)
     for i in n:
         F, X = deleteColumn(i, F, X)
     return F, X
