@@ -7,6 +7,7 @@ import warnings
 import crossValidation as cv
 import processData
 import diagnostics
+import roc
 
 X, y, F, id_list = processData.clean("raw_breast_cancer_data.csv")
 

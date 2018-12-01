@@ -1,5 +1,6 @@
 import numpy as np
 import leaveOneOut as loocv
+import crossValidation as cv
 import matplotlib.pyplot as pp
 from sklearn import metrics
 import processData
