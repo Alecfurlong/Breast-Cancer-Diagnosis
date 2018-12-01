@@ -3,6 +3,7 @@ import numpy as np
 import matplotlib.pyplot as pp
 import crossValidation as cv
 import svm
+from sklearn.svm import SVC
 
 # removing highly correlated attributes
 def deleteColumn(n, F, X):
@@ -18,7 +19,39 @@ def deleteColumns(n, F, X):
         F, X = deleteColumn(i, F, X)
     return F, X
 
+def drawParameterVAccuracyPlot():
+    X, y, F, id_list = processData.clean("raw_breast_cancer_data.csv")
+    
+    C_list = [0.001, 0.01, 0.1, 1.0, 10.0, 100, 1000]
+    # C_list = [0.001, 0.01, 0.1]
+
+    n = len(y)
+    data = [x for x in range(n)]
+    np.random.shuffle(data)
+
+    train = data[:int(n*0.8)]
+    test = data[int(n*0.8):]
+
+    errors = {}
+    for c in C_list:
+        print(c)
+        alg = SVC(C=c, kernel='linear')
+        alg.fit(X[train], y[train])
+        errors[c] = np.mean(y[test] != alg.predict(X[test]))
+
+    y_pos = np.arange(len(C_list))
+    errList = [errors[c] for c in C_list]
+    pp.bar(y_pos, errList, align='center')
+    pp.xticks(y_pos, C_list)
+    pp.xlabel('Slack Value')
+    pp.ylabel('Error Rate')
+    pp.title('Parameter VS Accuracy')
+    pp.show()
+
 def main():
+    drawParameterVAccuracyPlot()
+    return
+
     # loading the raw data
     X, y, F, id_list = processData.clean("raw_breast_cancer_data.csv")
 
