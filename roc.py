@@ -5,20 +5,31 @@ import matplotlib.pyplot as pp
 from sklearn import metrics
 
 def generateROC(X,y):
-	#get true positive rate, false positive rate
-	tpr, fpr = get_true_false_rates(X,y)
-	
-	print ("got stuff plotting now")
-
+	#init graph
 	pp.figure()
 	pp.xlabel("False Positive Rate")
 	pp.ylabel("True Positive Rate")
 	pp.title("ROC Curve")
 
+	#plot line 1 ###########################
+	y_pred = loocv.run(X,y,0.0001,'linear')
+	#get true positive rate, false positive rate
+	tpr, fpr = get_true_false_rates(X,y,y_pred)
+	
 	#calc area under curve and plot
 	area_under_curve = metrics.auc(fpr, tpr)
 	roc_label = '{} (AUC={:.3f})'.format('Linear SVM w/ LOOCV', area_under_curve)
 	pp.plot(fpr, tpr, color='orange', linewidth=2, label=roc_label)
+
+	#plot line 2 ###########################
+	y_pred = cv.linearTwoFold(X, y, 1.0, 'linear')
+	#get true positive rate, false positive rate
+	tpr, fpr = get_true_false_rates(X,y,y_pred)
+	
+	area_under_curve = metrics.auc(fpr, tpr)
+	roc_label = '{} (AUC={:.3f})'.format('Linear SVM w/ 2-Fold', area_under_curve)
+	pp.plot(fpr, tpr, color='red', linewidth=2, label=roc_label)
+
 
 	#plot linear line
 	x = [0.0, 1.0]
@@ -31,7 +42,7 @@ def generateROC(X,y):
 	pp.show()
 	pass
 
-def get_true_false_rates(X,y):
+def get_true_false_rates(X,y, y_pred):
 	tpr = [0.0]  # true positive rate
 	fpr = [0.0]  # false positive rate
 	
@@ -41,10 +52,6 @@ def get_true_false_rates(X,y):
 
 	correctlyClassifiedMal = 0.0
 	correctlyClassifiedBen = 0.0
-
-	#get predictions using leave one out cross validation
-	#y_pred = loocv.run(X,y,1.0,'linear')
-	y_pred = cv.linearTwoFold(X, y, 1.0, 'linear')
 
 	for i in range(len(X)):
 		#if y[i] matches prediction for X[i]
